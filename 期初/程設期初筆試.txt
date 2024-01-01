@@ -1,0 +1,141 @@
+1.How to read from command line arguments ? Please finish the comment out part .
+```cpp
+int main( /* some thing ... */){
+    /* print out all the arguments */
+    return 0;
+}
+```
+
+2.How to initialize dynamic array called arr in size of `3*5` and release the memory after use ?
+```cpp
+// initialize `arr`
+for(int i=0;i<3;i++){
+    for(int j=0;j<5;j++){
+        arr[i][j] = i*j;
+    }
+}
+// release memory of `arr`
+```
+
+3.What is the correct way to finish swap function ?
+```cpp
+void swap(int a,int b){
+    int tmp = a;
+    a = b;
+    b = tmp;
+}
+```
+```cpp
+void swap(int a,int b){
+    a = a ^ b;
+    b = a ^ b;
+    a = a ^ b;
+}
+```
+```cpp
+void swap(int *a,int *b){
+    int tmp = a;
+    a = b;
+    b = tmp;
+}
+```
+```cpp
+void swap(int *a,int *b){
+    int tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+```
+
+4.What is the correct way to initialize inst variable ?
+```cpp
+// definition
+struct obj{
+    unsigned int id;
+    double rate;
+};
+obj inst;
+// init
+```
+`inst::id=1; inst::rate=1.12`
+`inst->id=1; inst->rate=1.12`
+`inst.id=1; inst.rate=1.12`
+`inst=>id=1; inst=>rate=1.12`
+
+5.What is the correct way to initialize `inst` variable ?
+```cpp
+// definition
+struct obj{
+    unsigned int id;
+    double rate;
+};
+obj *inst = malloc(sizeof(obj));
+// init
+```
+`inst::id=1; inst::rate=1.12`
+`inst->id=1; inst->rate=1.12`
+`inst.id=1; inst.rate=1.12`
+`inst=>id=1; inst=>rate=1.12`
+
+6.Brief explain what `gcc` command is , and give some example of how to use `gcc` command.
+7.Brief explain what `Makefile` is , and give some example of how to use `Makefile`.
+
+8.Consider the following project structure , and all `*.c` in /src are dependencies for main.c . How to compile the project ?
+```
+.
+├─ main.c
+└─ src
+    ├─ a.c
+    ├─ a.h
+    ├─ b.c
+    ├─ b.h
+    ├─ c.c
+    └─ c.h
+
+1 directory, 7files
+```
+
+9.Which argument should be add to enable the gdb functioning in compile time?
+-g
+-gdb
+-debug
+-gdebug
+
+10.Which of the following best describes a void pointer in C?
+A pointer that can point to any type of variable.
+A pointer that points to a `void` type.
+A pointer that returns void.
+A pointer that doesn't hold any memory address.
+
+10.Given the function declaration int func(int, int), which of the following correctly declares a pointer to this function?
+`int (*ptr)(int, int) = func;`
+`int *ptr(int, int) = func;`
+`int ptr* = &func;`
+`int ptr(int, int*) = func;`
+
+11.The qsort function in C's standard library is used to sort an array. Which of the following parameters is NOT a direct argument to the qsort function?
+Base address of the array
+Number of elements in the array
+Size of each element
+Sorting algorithm (e.g., merge sort, bubble sort)
+
+12.Which pattern in C can't used to create generic functions?
+```cpp
+typedef void * item_p;
+```
+```cpp
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+```
+```cpp
+#define cbrt(X) _Generic((X), long double: cbrtl, \
+                              float: cbrtf,       \
+                              default: cbrt       \
+                        )(X)
+```
+```cpp
+template <class T>
+T Add(T a, T b)
+{
+    return a + b;
+}
+```

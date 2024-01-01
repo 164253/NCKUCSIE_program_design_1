@@ -1,0 +1,83 @@
+#! /bin/bash
+
+# Configuration
+HW=5
+ProblemID="1 2 3 4"
+Score=(5 10 40 45)
+# -------------
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+RESET='\033[0m'
+
+if [[ $(basename $(pwd)) = "HW$HW" ]]; then
+    FilePath=$(pwd)
+else
+    FilePath=~/HW$HW
+fi
+
+while (( $# != 0 )); do
+    if [[ $1 = "-p" ]]; then
+        shift 1
+        FilePath=$1
+    else
+        todo="$todo $1"
+    fi
+    shift 1
+done
+if [[ $todo != "" ]]; then ProblemID=$todo; fi
+
+echo "=> Using path : $FilePath"
+
+if ! test -d $FilePath/your_answer ; then mkdir $FilePath/your_answer; fi
+if test -d $FilePath/testcase ; then rm -r $FilePath/testcase; fi 
+mkdir $FilePath/testcase
+cp -r /share/HW${HW}/* $FilePath/testcase
+
+
+echo -e "${YELLOW}Testing p$p.c ...${RESET}\n-----------------------------"
+
+if ! test -d $FilePath/your_answer/p$p ; then mkdir $FilePath/your_answer/p$p; fi
+if test -f $FilePath/$p ; then rm $FilePath/$p; fi 
+gcc $FilePath/hw5.c -o $FilePath/hw5
+if (( $? != 0 )); then 
+    echo -e "${YELLOW}Compilation Error${RESET}"
+    echo "-----------------------------"
+    exit 0
+fi
+
+score=0
+for p in $ProblemID; do
+    input=$FilePath/testcase/Subtask${p}_input
+    answer=$FilePath/testcase/Subtask${p}_output
+    result=$FilePath/your_answer/Subtask${p}_output
+    echo "$FilePath/hw5 < $input > $result"
+    ExecResult=$(timeout 1 bash -c "$FilePath/hw5 < $input > $result" 2>&1)
+    ExecReturnValue=$?
+    if (( $ExecReturnValue != 0 )); then
+        if (( $ExecReturnValue == 124 )); then
+            echo -e "${BLUE}Time Limit Exceed${RESET}"
+        else
+            echo -e "${YELLOW}Runtime Error${RESET}"
+            echo $ExecResult
+        fi
+    else
+        diff $result $answer >> /dev/null
+        if (( $? != 0 )); then
+            echo -e "${RED}WA${RESET}"
+            echo -e "${BLUE}Input   Data${RESET}   : \n$(cat $input)"
+            echo -e "${BLUE}Your    Answer${RESET} : \n$(cat $result)"
+            echo -e "${BLUE}Correct Answer${RESET} : \n$(cat $answer)"
+            echo -e "${YELLOW}Note: You can use the following command to compare your code's output with the TA's answer :${RESET}\ndiff $result $answer" 
+        else
+            echo -e "${GREEN}AC${RESET}"
+            (( score += ${Score[(( $(printf "%d" "'$p") - 49 ))]} ))
+        fi
+    fi
+    echo "-----------------------------"
+done
+
+echo -e "Score:$score"
+exit $score
